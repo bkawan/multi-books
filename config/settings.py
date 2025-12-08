@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-
+LOCAL_APPS = [
+    'apps.user_account',
+    'apps.user_auth',
+    'apps.user_profile',
+    'apps.integration.quickbooks',
+    # 'apps.integration.zoho',
+    'apps.customer',
+    'apps.invoice',
+]
+INSTALLED_APPS += LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
@@ -78,7 +85,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -98,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -110,8 +115,40 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+AUTH_USER_MODEL = "user_account.UserAccount"
+
+QBO_CLIENT_ID = config('QBO_CLIENT_ID')
+QBO_CLIENT_SECRET = config('QBO_CLIENT_SECRET')
+QBO_REDIRECT_URI = config('QBO_REDIRECT_URI')
+QBO_ENVIRONMENT = config('QBO_ENVIRONMENT', default='sandbox')
+QBO_SANDBOX_BASE_URL = config("QBO_SANDBOX_BASE_URL", default="https://sandbox-quickbooks.api.intuit.com")
+QBO_PRODUCTION_BASE_URL = config("QBO_PRODUCTION_BASE_URL", default="https://quickbooks.api.intuit.com")
+QBO_BASE_URL = QBO_SANDBOX_BASE_URL if QBO_ENVIRONMENT.lower() == "sandbox" else QBO_PRODUCTION_BASE_URL
+
+
+# OAuth config
+ZOHO_CLIENT_ID = config("ZOHO_CLIENT_ID")
+ZOHO_CLIENT_SECRET = config("ZOHO_CLIENT_SECRET")
+ZOHO_REDIRECT_URI = config("ZOHO_REDIRECT_URI")
+
+# Environment (Zoho only has production, but we keep structure)
+ZOHO_ENVIRONMENT = config("ZOHO_ENVIRONMENT", default="production")
+
+# Base URLs
+ZOHO_ACCOUNTS_BASE_URL = config(
+    "ZOHO_ACCOUNTS_BASE_URL",
+    default="https://accounts.zoho.com"
+)
+
+ZOHO_BOOKS_API_BASE_URL = config(
+    "ZOHO_BOOKS_API_BASE_URL",
+    default="https://books.zoho.com/api/v3"
+)
+
+# Helpful combined URLs
+ZOHO_OAUTH_AUTHORIZE_URL = f"{ZOHO_ACCOUNTS_BASE_URL}/oauth/v2/auth"
+ZOHO_OAUTH_TOKEN_URL = f"{ZOHO_ACCOUNTS_BASE_URL}/oauth/v2/token"
