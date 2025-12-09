@@ -41,12 +41,18 @@ LOCAL_APPS = [
     'apps.user_account',
     'apps.user_auth',
     'apps.user_profile',
-    'apps.integration.quickbooks',
-    # 'apps.integration.zoho',
+    'apps.integration',
     'apps.customer',
     'apps.invoice',
+    'apps.company',
+
 ]
-INSTALLED_APPS += LOCAL_APPS
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_extensions'
+]
+INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -129,7 +135,6 @@ QBO_SANDBOX_BASE_URL = config("QBO_SANDBOX_BASE_URL", default="https://sandbox-q
 QBO_PRODUCTION_BASE_URL = config("QBO_PRODUCTION_BASE_URL", default="https://quickbooks.api.intuit.com")
 QBO_BASE_URL = QBO_SANDBOX_BASE_URL if QBO_ENVIRONMENT.lower() == "sandbox" else QBO_PRODUCTION_BASE_URL
 
-
 # OAuth config
 ZOHO_CLIENT_ID = config("ZOHO_CLIENT_ID")
 ZOHO_CLIENT_SECRET = config("ZOHO_CLIENT_SECRET")
@@ -152,3 +157,12 @@ ZOHO_BOOKS_API_BASE_URL = config(
 # Helpful combined URLs
 ZOHO_OAUTH_AUTHORIZE_URL = f"{ZOHO_ACCOUNTS_BASE_URL}/oauth/v2/auth"
 ZOHO_OAUTH_TOKEN_URL = f"{ZOHO_ACCOUNTS_BASE_URL}/oauth/v2/token"
+
+FERNET_KEY = config("CUSTOM_FERNET_KEY")
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/1"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Kathmandu"

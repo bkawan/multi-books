@@ -1,8 +1,13 @@
 from django.db import models
 
+from apps.company.models import Company
+from apps.integration.models import IntegrationProvider
+
 
 class Customer(models.Model):
     # Company info
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
+
     company_name = models.CharField(max_length=255, blank=False, verbose_name="Company Name")
     sales_tax_id = models.CharField(max_length=255, blank=False, verbose_name="Sales Tax ID")
     customer_id = models.CharField(max_length=255, blank=False, verbose_name="Customer ID")
@@ -33,6 +38,9 @@ class Customer(models.Model):
     customer_contact1 = models.CharField(max_length=50, blank=True, null=True, verbose_name="Primary Customer Contact")
     customer_contact2 = models.CharField(max_length=50, blank=True, null=True,
                                          verbose_name="Secondary Customer Contact")
+
+    integration_provider = models.ForeignKey(IntegrationProvider, on_delete=models.SET_NULL, null=True, blank=True)
+    integration_raw_data = models.JSONField(default=dict, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
