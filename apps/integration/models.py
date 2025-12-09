@@ -42,3 +42,40 @@ class CompanyIntegration(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
+
+class ProviderFieldMapping(models.Model):
+    ENTITY_CHOICES = [
+        ('Invoice', 'Invoice'),
+        ('Customer', 'Customer'),
+    ]
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    provider = models.ForeignKey(IntegrationProvider, on_delete=models.CASCADE)
+
+    entity_name = models.CharField(
+        max_length=50,
+        choices=ENTITY_CHOICES,
+        help_text="Select the entity type, e.g., Invoice, Customer"
+    )
+    local_field = models.CharField(
+        max_length=100,
+        help_text="Your database field name"
+    )
+    provider_field = models.CharField(
+        max_length=100,
+        help_text="The field name in the provider API response"
+    )
+
+    is_required = models.BooleanField(default=False)
+    description = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('company', 'provider', 'entity_name', 'local_field')
+        verbose_name = "Field Mapping"
+        verbose_name_plural = "Field Mappings"
+
+    def __str__(self):
+        return f"{self.company} | {self.provider} | {self.entity_name} | {self.local_field} -> {self.provider_field}"

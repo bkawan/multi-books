@@ -1,6 +1,15 @@
 from django.conf import settings
 from intuitlib.enums import Scopes
 
+class IntegrationProviderChoice:
+    QUICKBOOKS = "quickbooks_online"
+    ZOHO = "zoho_books"
+
+    CHOICES = [
+        (QUICKBOOKS, "QuickBooks Online"),
+        (ZOHO, "Zoho Books"),
+    ]
+
 INTEGRATION_PROVIDERS = [
     {
         "name": "quickbooks_online",
