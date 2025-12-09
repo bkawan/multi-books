@@ -1,7 +1,5 @@
-Here’s an updated simple `README.md` including a note on generating a Fernet key using your Python utility:
 
-````markdown
-# Django Project
+# Project Setup
 
 ## Setup
 
