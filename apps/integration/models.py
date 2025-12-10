@@ -37,6 +37,13 @@ class CompanyIntegration(models.Model):
     # api_key, secrets, extra info
     credentials = EncryptedJSONField(default=dict, blank=True)
     # Provider-specific identifiers (flexible)
+    provider_identifier = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Unique ID per provider (realm_id, organization_id, tenant_id, etc.)"
+    )
+
     provider_data = EncryptedJSONField(default=dict, blank=True)  # api_key, secrets, extra info
 
     created_at = models.DateTimeField(auto_now_add=True)

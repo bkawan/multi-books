@@ -107,6 +107,7 @@ def quickbooks_callback(request):
     CompanyIntegration.objects.update_or_create(
         company=company,
         provider=provider,
+        provider_identifier=realm_id,
         defaults={
             "credentials": {
                 "access_token": auth_client.access_token,

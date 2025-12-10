@@ -1,11 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from apps.company.constants import CompanyStatusChoices
+
 User = get_user_model()
 
 
 class Company(models.Model):
     name = models.CharField(max_length=255)
+    status = models.CharField(
+        max_length=15,
+        choices=CompanyStatusChoices.choices,
+        default=CompanyStatusChoices.ONBOARDING,
+    )
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
