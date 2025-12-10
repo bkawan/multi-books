@@ -1,5 +1,6 @@
 import uuid
 
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -13,8 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from apps.company.constants import CompanyStatusChoices
 from apps.company.models import Company
 from apps.integration.models import IntegrationProvider, CompanyIntegration
-from apps.integration.selectors import get_qbo_customers
-from apps.integration.services import create_or_update_qbo_customers
+from apps.integration.selectors import get_qbo_customers, get_qbo_invoices
+from apps.integration.services import create_or_update_qbo_customers, create_or_update_qbo_invoices
 
 
 class QuickBooksConnectAPIView(APIView):
@@ -231,3 +232,38 @@ class QuickBooksOnlineSyncCustomersAPIView(APIView):
 
         # 3. Send JSON response
         return Response({"message": "Successfully Fetch and updated in Database"}, status=status.HTTP_200_OK)
+
+
+class QuickBooksOnlineSyncInvoicesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, company_id):
+        # ToDo need to check request user company
+        # ToDo need to check if admin is doing on behalf of company
+        # 1. Find integration
+        if request.user.company.id != company_id:
+            return Response(
+                {"error": "You are not authorized for this company."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not request.user.company.can_sync_provider():
+            return Response(
+                {"error": "Your company can not be sync"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        company_integration = CompanyIntegration.objects.filter(
+            company_id=company_id,
+            provider__name="quickbooks_online"
+        ).first()
+
+        if not company_integration:
+            return JsonResponse({"error": "QuickBooks not connected for this company"}, status=400)
+        try:
+            invoices = get_qbo_invoices(company_integration)
+            create_or_update_qbo_invoices(company_integration, invoices)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+        return JsonResponse({"message": "Successfully Fetch and updated Invoices in Database"},
+                            status=status.HTTP_200_OK)
