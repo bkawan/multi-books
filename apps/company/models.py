@@ -34,7 +34,7 @@ class Company(models.Model):
 
 
 class CompanyMember(models.Model):
-    user_account = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_account = models.OneToOneField(User, on_delete=models.CASCADE, related_name="company_member")
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     role = models.CharField(
         max_length=50,

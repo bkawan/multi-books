@@ -45,3 +45,11 @@ class UserAccount(AbstractUser):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    @property
+    def company(self):
+        from apps.company.models import CompanyMember
+        try:
+            return self.company_member.company
+        except CompanyMember.DoesNotExist:
+            return None
