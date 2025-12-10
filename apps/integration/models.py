@@ -49,6 +49,7 @@ class CompanyIntegration(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    last_synced_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = [("provider", "provider_identifier"), ("company", "provider")]
