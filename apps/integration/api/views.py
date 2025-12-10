@@ -267,3 +267,39 @@ class QuickBooksOnlineSyncInvoicesAPIView(APIView):
 
         return JsonResponse({"message": "Successfully Fetch and updated Invoices in Database"},
                             status=status.HTTP_200_OK)
+
+
+class QuickBooksOnlineSyncCompanyAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, company_id):
+        # ToDo need to check request user company
+        # ToDo need to check if admin is doing on behalf of company
+        # 1. Find integration
+        if request.user.company.id != company_id:
+            return Response(
+                {"error": "You are not authorized for this company."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not request.user.company.can_sync_provider():
+            return Response(
+                {"error": "Your company can not be sync"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        company_integration = CompanyIntegration.objects.filter(
+            company_id=company_id,
+            provider__name="quickbooks_online"
+        ).first()
+
+        if not company_integration:
+            return JsonResponse({"error": "QuickBooks not connected for this company"}, status=400)
+        try:
+            # todo need to work on the
+            print('wip')
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+        return JsonResponse({"message": "Need to Work on this"},
+                            status=status.HTTP_200_OK)

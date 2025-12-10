@@ -1,10 +1,8 @@
-# apps/integration/tasks.py
 from celery import shared_task
 
-from apps.customer.services import create_or_update_qbo_customers
 from apps.integration.models import CompanyIntegration
 from apps.integration.selectors import get_qbo_customers, get_qbo_invoices
-from apps.invoice.services import create_or_update_qbo_invoices
+from apps.integration.services import create_or_update_qbo_customers, create_or_update_qbo_invoices
 
 
 @shared_task

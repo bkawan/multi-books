@@ -1,7 +1,6 @@
 from django.urls import path
-from . import views
 from .api.views import QuickBooksConnectAPIView, QuickBooksCallbackAPIView, QuickBooksOnlineSyncCustomersAPIView, \
-    QuickBooksOnlineSyncInvoicesAPIView
+    QuickBooksOnlineSyncInvoicesAPIView, QuickBooksOnlineSyncCompanyAPIView
 
 urlpatterns = [
     path("qbo/connect/<int:company_id>/", QuickBooksConnectAPIView.as_view(), name="qbo-connect"),
@@ -9,5 +8,5 @@ urlpatterns = [
     path("qbo/<int:company_id>/customers/", QuickBooksOnlineSyncCustomersAPIView.as_view(),
          name="qbo-sync-customers"),
     path("qbo/<int:company_id>/invoices/", QuickBooksOnlineSyncInvoicesAPIView.as_view(), name="qbo-sync-invoices"),
-    path("qbo/<int:company_id>/invoices/", views.get_invoices_api, name="qbo-sync-company"),
+    path("qbo/<int:company_id>/invoices/", QuickBooksOnlineSyncCompanyAPIView.as_view(), name="qbo-sync-company"),
 ]
