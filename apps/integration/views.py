@@ -1,7 +1,5 @@
 import uuid
 
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
@@ -9,10 +7,10 @@ from intuitlib.client import AuthClient
 from intuitlib.enums import Scopes
 
 from apps.company.models import Company
-from apps.customer.services import create_or_update_qbo_customers
+from .services import create_or_update_qbo_customers
 from apps.integration.models import IntegrationProvider, CompanyIntegration
 from apps.integration.selectors import get_qbo_customers, get_qbo_invoices
-from apps.invoice.services import create_or_update_qbo_invoices
+from .services import create_or_update_qbo_invoices
 
 
 # @login_required
