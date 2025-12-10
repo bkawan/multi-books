@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickBooks App Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        .connected {
+            color: green;
+        }
+
+        .disconnected {
+            color: red;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<h1>QuickBooks App Home</h1>
+
+{% if user.is_authenticated %}
+<p>Logged in as: {{ user.email }}</p>
+<p>Company: {{ user.company }}</p>
+
+{% if qb_connected %}
+<p class="connected">✅ QuickBooks is connected</p>
+
+<div class="section">
+    <h3>Sync Options</h3>
+    <ul>
+        <li><a href="{% url 'qbo-sync-customers' user.company.id %}">Sync Customers</a></li>
+        <li><a href="{% url 'qbo-sync-invoices' user.company.id %}">Sync Invoices</a></li>
+        <!--        <li><a href="{% url 'qbo-sync-company' user.company.id %}">Sync Company Info</a></li>-->
+    </ul>
+</div>
+
+<div class="section">
+    <h3>QuickBooks Actions</h3>
+    <ul>
+        <li><a href="{% url 'qbo-connect' user.company.id %}">Reconnect / Connect</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+</div>
+
+<div class="section">
+    <h3>Integration Details</h3>
+    <!--    <pre>{{ qb_integration|safe }}</pre>-->
+</div>
+
+{% else %}
+<p class="disconnected">❌ QuickBooks is not connected.</p>
+<ul>
+    <li>
+        <a href="{% url 'qbo-connect' user.company.id %}">Connect QuickBooks</a>
+    </li>
+    <li>
+        <a href="{% url 'logout' %}">Logout</a>
+    </li>
+</ul>
+{% endif %}
+
+{% else %}
+<p class="disconnected">You are not logged in.</p>
+<a href="{% url 'rest_framework:login' %}">Login</a>
+{% endif %}
+
+</body>
+</html>

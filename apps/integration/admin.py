@@ -23,6 +23,7 @@ class CompanyIntegrationAdmin(admin.ModelAdmin):
     list_display = (
         "company",
         "provider",
+        "provider_identifier",
         "is_active",
         "created_at",
         "modified_at",

@@ -32,6 +32,13 @@ class Company(models.Model):
         create_default_invoice_field_mappings_qbo(self, provider)
         return f"Default QuickBooks Invoice mappings created for company '{self.name}'"
 
+    def can_sync_provider(self):
+        return (
+                self.is_active and
+                self.status in [CompanyStatusChoices.ACTIVE, CompanyStatusChoices.ACCEPTED]
+
+        )
+
 
 class CompanyMember(models.Model):
     user_account = models.OneToOneField(User, on_delete=models.CASCADE, related_name="company_member")

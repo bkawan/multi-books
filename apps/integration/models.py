@@ -50,6 +50,9 @@ class CompanyIntegration(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = [("provider", "provider_identifier"), ("company", "provider")]
+
 
 class ProviderFieldMapping(models.Model):
     ENTITY_CHOICES = [

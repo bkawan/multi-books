@@ -17,11 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from apps.integration.views import home, logout_view
 from config import api_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('integration/', include('apps.integration.urls')),
+    path('', home, name='home'),
+    path('logout/',logout_view, name='logout'),
 
 ]
 urlpatterns += [
